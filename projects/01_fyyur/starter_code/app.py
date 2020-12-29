@@ -64,7 +64,7 @@ class Artist(db.Model):
     website = db.Column(db.String)
     seeking_venue = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String)
-    shows = db.relationship('show', backref='artist', lazy=True)
+    shows = db.relationship('Show', backref='artist', lazy=True)
 
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
 
@@ -157,7 +157,7 @@ def show_venue(venue_id):
     "address": "1015 Folsom Street",
     "city": "San Francisco",
     "state": "CA",
-    "phone": "123-123-1234",
+    "phone": "",
     "website": "https://www.themusicalhop.com",
     "facebook_link": "https://www.facebook.com/TheMusicalHop",
     "seeking_talent": True,
