@@ -111,7 +111,6 @@ def venues():
   # TODO: replace with real venues data.
   #       num_shows should be aggregated based on number of upcoming shows per venue.
   data = []
-
   venues = Venue.query.all()
 
   for location in Venue.query.with_entities(Venue.city, Venue.state).distinct():
@@ -132,14 +131,24 @@ def search_venues():
   # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
   # seach for Hop should return "The Musical Hop".
   # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
-  response={
-    "count": 1,
-    "data": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }
+
+  word = request.form.get('search_term').lower()
+
+  venues = Venue.query.all()
+  response = {}
+  data = []
+
+  for venue in venues:
+    details = {
+      "id": venue.id,
+      "name": venue.name,
+    }
+    if word in venue.name.lower():
+      data.append(details)
+
+  response['count'] = len(data)
+  response['data'] = data
+
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
 @app.route('/venues/<int:venue_id>')
