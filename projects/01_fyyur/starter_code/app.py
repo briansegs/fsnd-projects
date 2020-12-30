@@ -5,6 +5,7 @@
 import json
 import dateutil.parser
 import babel
+import datetime
 from flask import Flask, render_template, request, Response, flash, redirect, url_for
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
@@ -13,6 +14,7 @@ from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
 from flask_migrate import Migrate
+
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -121,8 +123,8 @@ def venues():
         "id": venue.id,
         "name": venue.name
       } for venue in venues if
-            venue.city == location.city and venue.state == location.state]
-    })
+            venue.city == location.city and venue.state == location.state
+      ]})
 
   print(data)
 
@@ -171,16 +173,55 @@ def show_venue(venue_id):
 
 
 
-  venue1 = Venue.query.get(1)
+  venue = Venue.query.get(venue_id)
+  # artists = Artist.query.all()
+  present = datetime.now()
+  data = venue.__dict__
+  pastshows = []
+  upcomingshows = []
 
-  data1 = venue1.__dict__
+  # for show in Show.query.filter_by(venue_id=venue_id):
+  #   pastshows.extend([{
+  #     "artist_id": artist.id,
+  #     "artist_name": artist.name,
+  #     "artist_image_link": artist.image_link,
+  #     "start_time": str(show.start_time)
+  #   } for artist in artists if artist.id == show.artist_id and show.start_time < present])
 
+  # data['past_shows'] = pastshows
 
+  # for show in Show.query.filter_by(venue_id=venue_id):
+  #   upcomingshows.extend([{
+  #     "artist_id": artist.id,
+  #     "artist_name": artist.name,
+  #     "artist_image_link": artist.image_link,
+  #     "start_time": str(show.start_time)
+  #   } for artist in artists if artist.id == show.artist_id and show.start_time > present])
 
-  # for item in Venue.query.get(1):
-  #   data1.append(item)
+  # data['upcoming_shows'] = upcomingshows
 
-  print(data1)
+  for show in Show.query.filter_by(venue_id=venue_id):
+    artist = Artist.query.get(show.artist_id)
+    if artist.id == show.artist_id and show.start_time < present:
+      pastshows.extend([{
+        "artist_id": artist.id,
+        "artist_name": artist.name,
+        "artist_image_link": artist.image_link,
+        "start_time": str(show.start_time)
+      }])
+    else:
+      upcomingshows.extend([{
+        "artist_id": artist.id,
+        "artist_name": artist.name,
+        "artist_image_link": artist.image_link,
+        "start_time": str(show.start_time)
+      }])
+
+  data['past_shows'] = pastshows
+  data['upcoming_shows'] = upcomingshows
+  data['past_shows_count'] = len(pastshows)
+  data['upcoming_shows_count'] = len(upcomingshows)
+
     #   "past_shows": [{
     #     "artist_id": 4,
     #     "artist_name": "Guns N Petals",
@@ -269,7 +310,7 @@ def show_venue(venue_id):
     "past_shows_count": 1,
     "upcoming_shows_count": 1,
   }
-  data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
+  # data = list(filter(lambda d: d['id'] == venue_id, [data1, data2, data3]))[0]
   return render_template('pages/show_venue.html', venue=data)
 
 #  Create Venue
