@@ -13,6 +13,7 @@ import logging
 from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
+from forms import VenueForm
 from flask_migrate import Migrate
 
 
@@ -195,11 +196,38 @@ def create_venue_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
 
-  # on successful db insert, flash success
-  flash('Venue ' + request.form['name'] + ' was successfully listed!')
+  form = VenueForm()
+
+  try:
+    print('TRYING')
+
+    venue = Venue(
+      name=form.name.data,
+      genres=form.genres.data,
+      address=form.address.data,
+      city=form.city.data,
+      state=form.state.data,
+      phone=form.phone.data,
+      # website=form.website,
+      facebook_link=form.facebook_link.data,
+      # seeking_talent=form.seeking_talent,
+      image_link=form.image_link.data,
+    )
+    print(venue.__dict__)
+    db.session.add(venue)
+    print(1)
+    db.session.commit()
+    print(2)
+    # on successful db insert, flash success
+    flash('Venue ' + form.name.data + ' was successfully listed!')
+
   # TODO: on unsuccessful db insert, flash an error instead.
-  # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
+  except:
+    db.session.rollback()
+    flash('An error occurred. Venue ' + form.name.data + ' could not be listed.')
   # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+  finally:
+    db.session.close()
   return render_template('pages/home.html')
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
@@ -207,9 +235,18 @@ def delete_venue(venue_id):
   # TODO: Complete this endpoint for taking a venue_id, and using
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
 
+  try:
+    venue = Venue.query.get(venue_id)
+    db.session.delete(venue)
+    db.session.commit()
+  except:
+    db.session.rollback()
+  finally:
+    db.session.close()
+  return render_template('pages/home.html')
+
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
-  return None
 
 #  Artists
 #  ----------------------------------------------------------------
