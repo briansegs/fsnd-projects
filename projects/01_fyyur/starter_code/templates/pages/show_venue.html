@@ -74,7 +74,24 @@
 		{% endfor %}
 	</div>
 </section>
-<input type="submit" value="Delete Venue" class="btn btn-primary btn-lg btn-block">
+<button id="delete_button" data-id="{{venue.id}}"> DELETE </button>
 
+<script>
+	const delete_button = document.getElementById('delete_button');
+	delete_button.onclick = function (e) {
+		const venue_id = e.target.dataset['id'];
+		fetch('/venues/' + venue_id, {
+			method: "DELETE"
+		})
+		.then(function() {
+			window.location.href = '/';
+		})
+	}
+
+
+</script>
 {% endblock %}
+
+
+
 
