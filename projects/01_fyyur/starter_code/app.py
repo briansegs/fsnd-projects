@@ -386,13 +386,35 @@ def create_artist_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
 
-  # on successful db insert, flash success
-  flash('Artist ' + request.form['name'] + ' was successfully listed!')
+  form = ArtistForm()
+
+  try:
+    artist = Artist(
+      name=form.name.data,
+      genres=form.genres.data,
+      city=form.city.data,
+      state=form.state.data,
+      phone=form.phone.data,
+      # website=form.website,
+      facebook_link=form.facebook_link.data,
+      # seeking_talent=form.seeking_talent,
+      image_link=form.image_link.data,
+    )
+    db.session.add(artist)
+    db.session.commit()
+    # on successful db insert, flash success
+    flash('Artist ' + form.name.data + ' was successfully listed!')
+
   # TODO: on unsuccessful db insert, flash an error instead.
-  # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
+  except:
+    db.session.rollback()
+    flash('An error occurred. Artist ' + form.name.data + ' could not be listed.')
+  # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+  finally:
+    db.session.close()
   return render_template('pages/home.html')
 
-@app.route('/artists/<artist_id>', methods=['DELETE'])
+@app.route('/artists/<int:artist_id>', methods=['DELETE'])
 def delete_artist(artist_id):
   # TODO: Complete this endpoint for taking a venue_id, and using
   # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
