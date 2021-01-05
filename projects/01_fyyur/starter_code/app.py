@@ -204,9 +204,10 @@ def create_venue_submission():
       city=form.city.data,
       state=form.state.data,
       phone=form.phone.data,
-      # website=form.website,
+      website=form.website.data,
       facebook_link=form.facebook_link.data,
-      # seeking_talent=form.seeking_talent,
+      seeking_talent=form.seeking_talent.data,
+      seeking_description=form.seeking_description.data,
       image_link=form.image_link.data,
     )
     db.session.add(venue)
