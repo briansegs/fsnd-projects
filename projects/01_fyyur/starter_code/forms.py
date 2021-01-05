@@ -120,7 +120,7 @@ class VenueForm(Form):
         'website', validators=[URL()]
     )
     seeking_talent = BooleanField(
-        'seeking_link'
+        'seeking_talent'
     )
     seeking_description = StringField(
         'seeking_description'

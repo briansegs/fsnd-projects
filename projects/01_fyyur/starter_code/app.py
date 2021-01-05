@@ -207,7 +207,7 @@ def create_venue_submission():
       website=form.website.data,
       facebook_link=form.facebook_link.data,
       seeking_talent=form.seeking_talent.data,
-      seeking_description=form.seeking_description,
+      seeking_description=form.seeking_description.data,
       image_link=form.image_link.data,
     )
     db.session.add(venue)
@@ -337,10 +337,10 @@ def edit_artist_submission(artist_id):
     artist.city=form.city.data,
     artist.state=form.state.data,
     artist.phone=form.phone.data,
-    # website=form.website,
+    artist.website=form.website.data,
     artist.facebook_link=form.facebook_link.data,
-    # seeking_talent=form.seeking_talent,
-    # image_link=form.image_link.data,
+    # seeking_talent=form.seeking_talent.data,
+    artist.image_link=form.image_link.data,
 
     db.session.commit()
     flash('Artist ' + form.name.data + ' was successfully edited!')
@@ -375,15 +375,18 @@ def edit_venue_submission(venue_id):
     venue = Venue.query.get(venue_id)
 
     venue.name=form.name.data,
-    venue.address=form.address.data,
     venue.genres=form.genres.data,
+    venue.address=form.address.data,
     venue.city=form.city.data,
     venue.state=form.state.data,
     venue.phone=form.phone.data,
-    # venue.website=form.website,
+    venue.website=form.website.data,
     venue.facebook_link=form.facebook_link.data,
-    # venue.seeking_talent=form.seeking_talent,
-    # venue.image_link=form.image_link.data,
+    # venue.seeking_talent=form.seeking_talent.data,
+    # venue.seeking_description=form.seeking_description.data,
+    venue.image_link=form.image_link.data,
+
+
 
     db.session.commit()
     flash('Venue ' + form.name.data + ' was successfully edited!')
