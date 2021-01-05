@@ -350,7 +350,7 @@ def edit_artist_submission(artist_id):
     flash('An error occurred. Artist ' + form.name.data + ' could not be edited.')
   finally:
     db.session.close()
-  # return render_template('pages/home.html')
+
 
 
   return redirect(url_for('show_artist', artist_id=artist_id))
@@ -367,6 +367,32 @@ def edit_venue(venue_id):
 def edit_venue_submission(venue_id):
   # TODO: take values from the form submitted, and update existing
   # venue record with ID <venue_id> using the new attributes
+
+  form = VenueForm()
+
+  try:
+    venue = Venue.query.get(venue_id)
+
+    venue.name=form.name.data,
+    venue.address=form.address.data,
+    venue.genres=form.genres.data,
+    venue.city=form.city.data,
+    venue.state=form.state.data,
+    venue.phone=form.phone.data,
+    # venue.website=form.website,
+    venue.facebook_link=form.facebook_link.data,
+    # venue.seeking_talent=form.seeking_talent,
+    # venue.image_link=form.image_link.data,
+
+    db.session.commit()
+    flash('Venue ' + form.name.data + ' was successfully edited!')
+
+  # TODO: on unsuccessful db insert, flash an error instead.
+  except:
+    db.session.rollback()
+    flash('An error occurred. venue ' + form.name.data + ' could not be edited.')
+  finally:
+    db.session.close()
   return redirect(url_for('show_venue', venue_id=venue_id))
 
 #  Create Artist
