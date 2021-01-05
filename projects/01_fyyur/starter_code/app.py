@@ -209,19 +209,14 @@ def create_venue_submission():
       # seeking_talent=form.seeking_talent,
       image_link=form.image_link.data,
     )
-    print(venue.__dict__)
     db.session.add(venue)
-    print(1)
     db.session.commit()
-    print(2)
-    # on successful db insert, flash success
     flash('Venue ' + form.name.data + ' was successfully listed!')
 
   # TODO: on unsuccessful db insert, flash an error instead.
   except:
     db.session.rollback()
     flash('An error occurred. Venue ' + form.name.data + ' could not be listed.')
-  # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
   finally:
     db.session.close()
   return render_template('pages/home.html')
@@ -242,8 +237,6 @@ def delete_venue(venue_id):
   finally:
     db.session.close()
     return jsonify({'success': True})
-
-
   # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
   # clicking that button delete it from the db then redirect the user to the homepage
 
