@@ -1,3 +1,5 @@
+# Adds test info into database
+
 from app import db, Venue, Artist, Show
 
 venue1 = Venue(
@@ -110,20 +112,20 @@ show5 = Show(
     start_time="2035-04-15T20:00:00.000Z"
 )
 
-show1.artist = artist1
-show2.artist = artist2
-show3.artist = artist3
-show4.artist = artist3
-show5.artist = artist3
+# show1.artist = artist1
+# show2.artist = artist2
+# show3.artist = artist3
+# show4.artist = artist3
+# show5.artist = artist3
 
-db.session.add(venue1)
-db.session.add(venue2)
-db.session.add(venue3)
-db.session.add(artist1)
-db.session.add(artist2)
-db.session.add(artist3)
+# db.session.add(venue1)
+# db.session.add(venue2)
+# db.session.add(venue3)
+# db.session.add(artist1)
+# db.session.add(artist2)
+# db.session.add(artist3)
 
 
-db.session.commit()
+# db.session.commit()
 
-db.session.close()
+# db.session.close()
