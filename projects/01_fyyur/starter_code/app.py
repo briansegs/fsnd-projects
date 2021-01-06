@@ -113,12 +113,12 @@ def show_venue(venue_id):
   present = datetime.now()
   pastshows = []
   upcomingshows = []
-  for show in Show.query.filter_by(venue_id=venue_id):
-    artist = Artist.query.get(show.artist_id)
+  shows = Show.query.filter_by(venue_id=venue_id).join(Artist)
+  for show in shows:
     details = [{
-        "artist_id": artist.id,
-        "artist_name": artist.name,
-        "artist_image_link": artist.image_link,
+        "artist_id": show.artist.id,
+        "artist_name": show.artist.name,
+        "artist_image_link": show.artist.image_link,
         "start_time": str(show.start_time)
       }]
     if show.start_time < present:
@@ -368,7 +368,7 @@ def delete_artist(artist_id):
 
 @app.route('/shows')
 def shows():
-  # displays list of shows at /shows
+  # displays list of shwows at /shows
   artists = Artist.query.all()
   venues = Venue.query.all()
   data = []
