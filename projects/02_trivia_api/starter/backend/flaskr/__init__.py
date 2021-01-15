@@ -68,6 +68,9 @@ def create_app(test_config=None):
 
     formatted_categories = {category.id:category.type for category in Category.query.all()}
 
+    if len(ordered_questions) == 0:
+      abort(404)
+
     return jsonify({
       'success':True,
       'questions':ordered_questions,
@@ -86,9 +89,37 @@ def create_app(test_config=None):
   '''
   @TODO:
   Create an endpoint to DELETE question using a question ID.
+  '''
+
+  @app.route('/questions/<int:question_id>', methods=['DELETE'])
+  def delete_question(question_id):
+    print('ready')
+    try:
+      print('start')
+      question = Question.query.filter(Question.id == question_id).one_or_none()
+      print(question)
+
+      if question == None:
+        abort(404)
+
+      question.delete()
+      questions_list = Question.query.order_by(Question.id).all()
+      ordered_questions = paginated_questions(request, questions_list)
+
+      return jsonify({
+      'success':True,
+      'deleted':question_id,
+      'questions':ordered_questions,
+      'total_questions':len(questions_list),
+      })
+
+    except:
+      print('fail')
+      abort(422)
 
 
 
+  '''
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page.
   '''
