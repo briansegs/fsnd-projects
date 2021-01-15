@@ -129,7 +129,11 @@ def create_app(test_config=None):
   Create an endpoint to POST a new question,
   which will require the question and answer text,
   category, and difficulty score.
+  '''
 
+
+
+  '''
   TEST: When you submit a question on the "Add" tab,
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.
@@ -173,6 +177,22 @@ def create_app(test_config=None):
   Create error handlers for all expected errors
   including 404 and 422.
   '''
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      'success':False,
+      'error':404,
+      'message':'Resource Not Found'
+    }), 404
+
+  @app.errorhandler(405)
+  def not_found(error):
+    return jsonify({
+      'success':False,
+      'error':405,
+      'message':'Method Not Allowed'
+    }), 405
+
 
   return app
 
