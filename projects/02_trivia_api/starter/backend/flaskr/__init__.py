@@ -66,8 +66,7 @@ def create_app(test_config=None):
     questions_list = Question.query.order_by(Question.id).all()
     ordered_questions = paginated_questions(request, questions_list)
 
-    categories = Category.query.all()
-    formatted_categories = {category.id:category.type for category in categories}
+    formatted_categories = {category.id:category.type for category in Category.query.all()}
 
     return jsonify({
       'success':True,
