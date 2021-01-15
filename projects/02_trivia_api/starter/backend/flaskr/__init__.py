@@ -8,6 +8,15 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
+def paginated_questions(request, questions_list):
+  page = request.args.get('page', 1, type=int)
+  start = (page - 1) * QUESTIONS_PER_PAGE
+  end = start + QUESTIONS_PER_PAGE
+
+  formatted_questions = [question.format() for question in questions_list]
+  paginated_questions = formatted_questions[start:end]
+  return paginated_questions
+
 def create_app(test_config=None):
   # create and configure the app
   app = Flask(__name__)
@@ -54,20 +63,15 @@ def create_app(test_config=None):
 
   @app.route('/questions/')
   def get_questions():
-    page = request.args.get('page', 1, type=int)
-    start = (page - 1) * QUESTIONS_PER_PAGE
-    end = start + QUESTIONS_PER_PAGE
-
-    questions_list = Question.query.all()
-    formatted_questions = [question.format() for question in questions_list]
-    paginated_questions = formatted_questions[start:end]
+    questions_list = Question.query.order_by(Question.id).all()
+    ordered_questions = paginated_questions(request, questions_list)
 
     categories = Category.query.all()
     formatted_categories = {category.id:category.type for category in categories}
 
     return jsonify({
       'success':True,
-      'questions':paginated_questions,
+      'questions':ordered_questions,
       'total_questions':len(questions_list),
       'current_category':None,
       'categories':formatted_categories
@@ -83,6 +87,8 @@ def create_app(test_config=None):
   '''
   @TODO:
   Create an endpoint to DELETE question using a question ID.
+
+
 
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page.
