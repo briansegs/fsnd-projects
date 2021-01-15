@@ -52,24 +52,26 @@ def create_app(test_config=None):
   number of total questions, current category, categories.
   '''
 
-  @app.route('/questions')
+  @app.route('/questions/')
   def get_questions():
     page = request.args.get('page', 1, type=int)
-    start = (page - 1) * 10
-    end = start + 10
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
 
-    questions = Question.query.all()
-    formatted_questions = [question.question for question in questions]
+    questions_list = Question.query.all()
+    formatted_questions = [question.format() for question in questions_list]
+    paginated_questions = formatted_questions[start:end]
+
     categories = Category.query.all()
     formatted_categories = {category.id:category.type for category in categories}
 
     return jsonify({
       'success':True,
-      'questions': formatted_questions[start:end],
-      'total_questions': len(formatted_questions),
-      'current_category': None,
-      'categories': formatted_categories
-      })
+      'questions':paginated_questions,
+      'total_questions':len(questions_list),
+      'current_category':None,
+      'categories':formatted_categories
+    })
 
   '''
   TEST: At this point, when you start the application
