@@ -92,6 +92,64 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'], 'Unprocessable Entity')
 
+    # def test_creat_new_question(self):
+    #     res = self.client().post('/questions/', json=self.new_book)
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+    #     self.assertTrue(data['created'])
+
+    # def test_405_if_question_creation_not_allowed(self):
+    #     res = self.client().post('/questions/82', json=self.new_book)
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, 405)
+    #     self.assertEqual(data['success'], False)
+    #     self.assertTrue(data['message'], 'Method Not Allowed')
+
+    # def test_get_question_by_search(self):
+    #     res = self.client().post('')
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+
+    # def test_error(self):
+    #     res = self.client().post('')
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, )
+    #     self.assertEqual(data['success'], False)
+
+    # def test_get_question_by_category(self):
+    #     res = self.client().get('')
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+
+    # def test_error(self):
+    #     res = self.client().get('')
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, )
+    #     self.assertEqual(data['success'], False)
+
+    # def test_get_random_question(self):
+    #     res = self.client().post('')
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, 200)
+    #     self.assertEqual(data['success'], True)
+
+    # def test_error(self):
+    #     res = self.client().post('')
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, )
+    #     self.assertEqual(data['success'], False)
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
