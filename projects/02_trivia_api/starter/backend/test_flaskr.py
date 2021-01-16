@@ -51,6 +51,26 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'], 'Method Not Allowed')
 
+    def test_get_paginated_questions(self):
+        res = self.client().get('/questions/')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(data['current_category'], None)
+        self.assertTrue(data['categories'])
+
+
+    def test_404_sent_requesting_beyond_valid_page(self):
+        res = self.client().get('/questions/?page=1001')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Resource Not Found')
+
     def test_delete_question(self):
         res = self.client().delete('/questions/2')
         data = json.loads(res.data)
@@ -64,16 +84,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(len(data['questions']))
         self.assertEqual(question, None)
 
+    def test_422_if_question_does_not_exist(self):
+        res = self.client().delete('/questions/2002')
+        data = json.loads(res.data)
 
-
-    # def test_404_resource_not_found(self):
-    #     Category.query.delete()
-    #     res = self.client().get('/categories')
-    #     data = json.loads(res.data)
-
-    #     self.assertEqual(res.status_code, 404)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertTrue(data['message'], 'Resource Not Found')
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Unprocessable Entity')
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

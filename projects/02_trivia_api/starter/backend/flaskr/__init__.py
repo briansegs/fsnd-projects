@@ -103,7 +103,7 @@ def create_app(test_config=None):
       print(question)
 
       if question == None:
-        abort(404)
+        abort(422)
 
       question.delete()
       questions_list = Question.query.order_by(Question.id).all()
