@@ -45,6 +45,9 @@ def create_app(test_config=None):
   @app.route('/categories')
   def get_categories():
     categories = Category.query.all()
+    if categories == None:
+      abort(404)
+
     formatted_categories = {category.id:category.type for category in categories}
 
     return jsonify({

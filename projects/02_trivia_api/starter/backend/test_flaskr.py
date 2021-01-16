@@ -45,9 +45,35 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_405_invalid_method(self):
         res = self.client().patch('/categories')
+        data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Method Not Allowed')
 
+    def test_delete_question(self):
+        res = self.client().delete('/questions/2')
+        data = json.loads(res.data)
+
+        question = Question.query.filter(Question.id == 1).one_or_none()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], 2)
+        self.assertTrue(data['total_questions'])
+        self.assertTrue(len(data['questions']))
+        self.assertEqual(question, None)
+
+
+
+    # def test_404_resource_not_found(self):
+    #     Category.query.delete()
+    #     res = self.client().get('/categories')
+    #     data = json.loads(res.data)
+
+    #     self.assertEqual(res.status_code, 404)
+    #     self.assertEqual(data['success'], False)
+    #     self.assertTrue(data['message'], 'Resource Not Found')
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
