@@ -136,16 +136,21 @@ def create_app(test_config=None):
 
     new_question = body.get('question', None)
     new_answer = body.get('answer', None)
-    new_category = body.get('category', None)
-    new_difficulty = body.get('difficulty', None)
+    new_category = body.get('category')
+    new_difficulty = body.get('difficulty')
+
+    if new_question == '' or new_answer == '':
+      abort(400)
 
     try:
+
       question = Question(
         question=new_question,
         answer=new_answer,
         category=new_category,
         difficulty=new_difficulty
       )
+
       question.insert()
 
       return jsonify({
@@ -166,7 +171,36 @@ def create_app(test_config=None):
   Create a POST endpoint to get questions based on a search term.
   It should return any questions for whom the search term
   is a substring of the question.
+  '''
 
+  @app.route('/questions/search/', methods=['POST'])
+  def search_questions():
+    body = request.get_json()
+    word = body['searchTerm'].lower()
+    questions_list = []
+
+    for questionss in Question.query.order_by(Question.id).all():
+      if word in questionss.question.lower():
+        print(questionss.question.lower())
+        questions_list.append(questionss)
+
+    ordered_questions = paginated_questions(request, questions_list)
+
+    formatted_categories = {category.id:category.type for category in Category.query.all()}
+
+    if len(ordered_questions) == 0:
+      abort(404)
+
+    return jsonify({
+      'success':True,
+      'questions':ordered_questions,
+      'total_questions':len(questions_list),
+      'current_category':None,
+      'categories':formatted_categories
+    })
+
+
+  '''
   TEST: Search by any phrase. The questions list will update to include
   only question that include that string within their question.
   Try using the word "title" to start.
@@ -208,7 +242,7 @@ def create_app(test_config=None):
     }), 404
 
   @app.errorhandler(405)
-  def not_found(error):
+  def not_allowed(error):
     return jsonify({
       'success':False,
       'error':405,
@@ -216,7 +250,7 @@ def create_app(test_config=None):
     }), 405
 
   @app.errorhandler(422)
-  def not_found(error):
+  def unprocessable_entity(error):
     return jsonify({
       'success':False,
       'error':422,
@@ -224,7 +258,7 @@ def create_app(test_config=None):
     }), 422
 
   @app.errorhandler(400)
-  def not_found(error):
+  def bad_request(error):
     return jsonify({
       'success':False,
       'error':400,
