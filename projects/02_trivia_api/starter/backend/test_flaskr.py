@@ -142,19 +142,24 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'], 'Resource Not Found')
 
-    # def test_get_question_by_category(self):
-    #     res = self.client().get('')
-    #     data = json.loads(res.data)
+    def test_get_question_by_category(self):
+        res = self.client().get('/categories/2/questions')
+        data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data['success'], True)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['questions'])
+        self.assertTrue(data['total_questions'])
+        self.assertEqual(data['current_category'], None)
+        self.assertTrue(data['categories'])
 
-    # def test_error(self):
-    #     res = self.client().get('')
-    #     data = json.loads(res.data)
+    def test_category_405_if_invalid_method(self):
+        res = self.client().delete('/categories/1001/questions')
+        data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, )
-    #     self.assertEqual(data['success'], False)
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Invalid Method')
 
     # def test_get_random_question(self):
     #     res = self.client().post('')

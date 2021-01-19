@@ -179,10 +179,9 @@ def create_app(test_config=None):
     word = body['searchTerm'].lower()
     questions_list = []
 
-    for questionss in Question.query.order_by(Question.id).all():
-      if word in questionss.question.lower():
-        print(questionss.question.lower())
-        questions_list.append(questionss)
+    for question in Question.query.order_by(Question.id).all():
+      if word in question.question.lower():
+        questions_list.append(question)
 
     ordered_questions = paginated_questions(request, questions_list)
 
@@ -209,7 +208,29 @@ def create_app(test_config=None):
   '''
   @TODO:
   Create a GET endpoint to get questions based on category.
+  '''
 
+  @app.route('/categories/<int:category_id>/questions')
+  def get_question_by_category(category_id):
+    questions_list = []
+
+    for question in Question.query.order_by(Question.id).all():
+      if category_id == question.category:
+        questions_list.append(question)
+
+    ordered_questions = paginated_questions(request, questions_list)
+
+    formatted_categories = {category.id:category.type for category in Category.query.all()}
+
+    return jsonify({
+      'success':True,
+      'questions':ordered_questions,
+      'total_questions':len(questions_list),
+      'current_category':None,
+      'categories':formatted_categories
+    })
+
+  '''
   TEST: In the "List" tab / main screen, clicking on one of the
   categories in the left column will cause only questions of that
   category to be shown.
