@@ -33,12 +33,24 @@ class TriviaTestCase(unittest.TestCase):
             'difficulty': 1
         }
 
+        self.new_bad_question = {
+            'question': '',
+            'answer': '',
+            'category': 1,
+            'difficulty': 3
+        }
+
         self.search_term = {
             'searchTerm': 'title'
         }
 
         self.bad_search = {
             'searchTerm': '____'
+        }
+
+        self.category = {
+            'quiz_category': {'id': '1'},
+            'previous_questions': []
         }
 
     def tearDown(self):
@@ -120,13 +132,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['created'])
 
-    def test_405_if_question_creation_not_allowed(self):
-        res = self.client().post('/questions/82', json=self.new_question)
+    def test_400_if_bad_request(self):
+        res = self.client().post('/questions', json=self.new_bad_question)
         data = json.loads(res.data)
 
-        self.assertEqual(res.status_code, 405)
+        self.assertEqual(res.status_code, 400)
         self.assertEqual(data['success'], False)
-        self.assertTrue(data['message'], 'Method Not Allowed')
+        self.assertTrue(data['message'], 'Bad Request')
 
     def test_get_question_by_search(self):
         res = self.client().post('/questions/search/', json=self.search_term)
@@ -166,19 +178,21 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'], 'Invalid Method')
 
-    # def test_get_random_question(self):
-    #     res = self.client().post('')
-    #     data = json.loads(res.data)
+    def test_get_quizz_questions(self):
+        res = self.client().post('/quizzes', json=self.category)
+        data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data['success'], True)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['question'])
 
-    # def test_error(self):
-    #     res = self.client().post('')
-    #     data = json.loads(res.data)
+    def test_quizzes_405_if_invalid_method(self):
+        res = self.client().get('/quizzes', json=self.category)
+        data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, )
-    #     self.assertEqual(data['success'], False)
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Invalid Method')
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
