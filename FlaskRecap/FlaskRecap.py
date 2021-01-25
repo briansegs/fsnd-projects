@@ -2,9 +2,10 @@ from flask import Flask, request, jsonify, abort
 
 app = Flask(__name__)
 
+
 greetings = {
-            'en': 'hello', 
-            'es': 'Hola', 
+            'en': 'hello',
+            'es': 'Hola',
             'ar': 'مرحبا',
             'ru': 'Привет',
             'fi': 'Hei',
