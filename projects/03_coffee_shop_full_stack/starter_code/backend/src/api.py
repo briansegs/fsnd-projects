@@ -51,7 +51,8 @@ def get_drinks():
 '''
 
 @app.route('/drinks-detail')
-def get_drinks_detail():
+@requires_auth('get:drinks-detail')
+def get_drinks_detail(jwt):
     drink_list = Drink.query.all()
     if drink_list is None:
         abort(404)
