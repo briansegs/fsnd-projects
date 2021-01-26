@@ -74,6 +74,28 @@ def get_drinks_detail(jwt):
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks', methods=['POST'])
+@requires_auth('post:drinks')
+def create_drinks(jwt):
+    body = request.get_json()
+
+    new_title = body.get('title')
+    new_recipe = body.get('recipe')
+
+    drink = Drink(
+            title=new_title,
+            recipe=json.dumps(new_recipe)
+        )
+    try:
+        drink.insert()
+        return jsonify({
+            'success': True,
+            'drinks': drink.long()
+        })
+
+    except Exception:
+        abort(422)
+
 
 '''
 @TODO implement endpoint
@@ -140,3 +162,9 @@ def resource_not_found(error):
 @TODO implement error handler for AuthError
     error handler should conform to general task above
 '''
+
+@app.errorhandler(AuthError)
+def handle_auth_error(ex):
+    response = jsonify(ex.error)
+    response.status_code = ex.status_code
+    return response
