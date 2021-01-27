@@ -30,6 +30,7 @@ db_drop_and_create_all()
 
 @app.route('/drinks')
 def get_drinks():
+    print('hello')
     drink_list = Drink.query.all()
     if drink_list is None:
         abort(404)
@@ -39,7 +40,7 @@ def get_drinks():
     return jsonify ({
         "success": True,
         "drinks": drinks
-    })
+    }), 200
 
 '''
 @TODO implement endpoint
@@ -56,13 +57,12 @@ def get_drinks_detail(jwt):
     drink_list = Drink.query.all()
     if drink_list is None:
         abort(404)
-
     drinks = [drink.long() for drink in drink_list]
 
     return jsonify ({
         "success": True,
         "drinks": drinks
-    })
+    }), 200
 
 '''
 @TODO implement endpoint
@@ -84,14 +84,14 @@ def create_drinks(jwt):
 
     drink = Drink(
             title=new_title,
-            recipe=json.dumps(new_recipe)
+            recipe=json.dumps([new_recipe])
         )
     try:
         drink.insert()
         return jsonify({
             'success': True,
             'drinks': drink.long()
-        })
+        }), 200
 
     except Exception:
         abort(422)
@@ -109,6 +109,39 @@ def create_drinks(jwt):
         or appropriate status code indicating reason for failure
 '''
 
+@app.route('/drinks/<drink_id>', methods=['PATCH'])
+@requires_auth('patch:drinks')
+def patch_drinks(jwt, drink_id):
+    body = request.get_json()
+
+    try:
+        drink = Drink.query.filter(Drink.id == drink_id).one_or_none()
+        if drink is None:
+            abort(404)
+
+        new_title = body.get('title')
+        new_recipe = body.get('recipe')
+
+        patch_drink = Drink(
+                title=new_title,
+                recipe=json.dumps(new_recipe)
+            )
+
+        patch_drink.update()
+
+        drink_list = Drink.query.all()
+        if drink_list is None:
+            abort(404)
+
+        drinks = [drink.long() for drink in drink_list]
+
+        return jsonify({
+            "success": True,
+            "drinks": drinks
+        }), 200
+
+    except Exception:
+        abort(422)
 
 '''
 @TODO implement endpoint
@@ -120,6 +153,28 @@ def create_drinks(jwt):
     returns status code 200 and json {"success": True, "delete": id} where id is the id of the deleted record
         or appropriate status code indicating reason for failure
 '''
+
+@app.route('/drinks/<drink_id>', methods=['DELETE'])
+@requires_auth('delete:drinks')
+def delete_drink(jwt, drink_id):
+    try:
+        drink = (
+            Drink.query.filter(Drink.id == drink_id).one_or_none()
+        )
+
+        if drink is None:
+            abort(404)
+
+        drink.delete()
+
+        return jsonify({
+            "success": True,
+            "delete": drink_id
+        }), 200
+
+    except Exception:
+        abort(422)
+
 
 
 ## Error Handling
@@ -164,7 +219,9 @@ def resource_not_found(error):
 '''
 
 @app.errorhandler(AuthError)
-def handle_auth_error(ex):
-    response = jsonify(ex.error)
-    response.status_code = ex.status_code
-    return response
+def handle_auth_error(error):
+    return jsonify({
+        "success": False,
+        "error": error.status_code,
+        "message": error.error['description']
+    }), 401
