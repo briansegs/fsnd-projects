@@ -30,7 +30,6 @@ db_drop_and_create_all()
 
 @app.route('/drinks')
 def get_drinks():
-    print('hello')
     drink_list = Drink.query.all()
     if drink_list is None:
         abort(404)
