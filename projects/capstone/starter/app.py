@@ -4,18 +4,29 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import db_drop_and_create_all, setup_db, Actor, Movie
 
-app = Flask(__name__)
-CORS(app)
-setup_db(app)
 
-db_drop_and_create_all()
+def create_app(test_congig=None):
+  app = Flask(__name__)
+  CORS(app)
+  setup_db(app)
+  db_drop_and_create_all()
 
-@app.route('/')
-def get_greeting():
+  @app.route('/')
+  def get_greeting():
     actors = Actor.query.all()
     a = []
     for actor in actors:
       a.append(actor.name)
 
     return str(a)
+
+  return app
+
+APP = create_app()
+
+if __name__ == '__main__':
+    APP.run(host='0.0.0.0', port=8080, debug=True)
+
+
+
 
