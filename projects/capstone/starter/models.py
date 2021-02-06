@@ -74,8 +74,8 @@ class Movie(db.Model):
         db.session.commit()
 
 
-class Actors(db.Model):
-    __tablename__ = 'actors'
+class Actor(db.Model):
+    __tablename__ = 'actor'
     # Autoincrementing, unique primary key
     id = db.Column(db.Integer, primary_key=True)
     # String Name
