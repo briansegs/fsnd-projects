@@ -73,6 +73,8 @@ class Movie(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+    def __repr__(self):
+        return f'<Movie {self.id} {self.title} {self.release_date}>'
 
 class Actor(db.Model):
     __tablename__ = 'actor'
@@ -121,3 +123,6 @@ class Actor(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+    def __repr__(self):
+        return f'<Actor {self.id} {self.name} {self.age} {self.gender}>'
