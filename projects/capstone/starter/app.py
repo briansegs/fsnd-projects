@@ -12,13 +12,8 @@ def create_app(test_congig=None):
   db_drop_and_create_all()
 
   @app.route('/')
-  def get_greeting():
-    actors = Actor.query.all()
-    a = []
-    for actor in actors:
-      a.append(actor.name)
-
-    return str(a)
+  def health():
+    return jsonify("Healthy")
 
   return app
 
