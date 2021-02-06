@@ -2,15 +2,20 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from models import db_drop_and_create_all, setup_db, Actor, Movie
 
-def create_app(test_config=None):
-  # create and configure the app
-  app = Flask(__name__)
-  CORS(app)
+app = Flask(__name__)
+CORS(app)
+setup_db(app)
 
-  return app
+db_drop_and_create_all()
 
-APP = create_app()
+@app.route('/')
+def get_greeting():
+    actors = Actor.query.all()
+    a = []
+    for actor in actors:
+      a.append(actor.name)
 
-if __name__ == '__main__':
-    APP.run(host='0.0.0.0', port=8080, debug=True)
+    return str(a)
+
