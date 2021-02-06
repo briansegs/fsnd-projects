@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 
+db = SQLAlchemy()
 
 '''
 db_drop_and_create_all()
