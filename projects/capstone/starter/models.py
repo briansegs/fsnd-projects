@@ -28,7 +28,7 @@ def db_drop_and_create_all():
 
 
 class Movie(db.Model):
-    __tablename__ = 'movie'
+    __tablename__ = 'movies'
     # Autoincrementing, unique primary key
     id = db.Column(db.Integer, primary_key=True)
     # String Title
@@ -77,7 +77,7 @@ class Movie(db.Model):
         return f'<Movie {self.id} {self.title} {self.release_date}>'
 
 class Actor(db.Model):
-    __tablename__ = 'actor'
+    __tablename__ = 'actors'
     # Autoincrementing, unique primary key
     id = db.Column(db.Integer, primary_key=True)
     # String Name
