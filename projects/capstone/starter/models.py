@@ -27,8 +27,8 @@ def db_drop_and_create_all():
     db.create_all()
 
 
-class Movies(db.Model):
-    __tablename__ = 'movies'
+class Movie(db.Model):
+    __tablename__ = 'movie'
     # Autoincrementing, unique primary key
     id = db.Column(db.Integer, primary_key=True)
     # String Title
