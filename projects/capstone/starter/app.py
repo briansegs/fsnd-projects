@@ -125,6 +125,35 @@ def create_app(test_congig=None):
 		except Exception:
 			abort(422)
 
+	@app.route('/movies/<movie_id>', methods=['PATCH'])
+	def patch_movie(movie_id):
+		body = request.get_json()
+
+		try:
+			movie = (
+				Movie.query.filter(Movie.id == movie_id).one_or_none()
+				)
+			if movie is None:
+				abort(404)
+
+			new_title = body.get('title')
+			new_release_date = body.get('release_date')
+
+			if new_title is not None:
+				movie.title = new_title
+			if new_release_date is not None:
+				movie.release_date = new_release_date
+
+			movie.update()
+
+			return jsonify({
+				'success': True,
+				'movie': movie.format()
+				}), 200
+
+		except Exception:
+			abort(422)
+
 
 	return app
 
