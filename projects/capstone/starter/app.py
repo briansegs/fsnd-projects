@@ -17,7 +17,7 @@ def create_app(test_congig=None):
 
 	@app.route('/movies')
 	def get_movies():
-		movie_list = Movie.query.all()
+		movie_list = Movie.query.order_by(Movie.id).all()
 		if movie_list is None:
 			abort(404)
 
@@ -30,7 +30,7 @@ def create_app(test_congig=None):
 
 	@app.route('/actors')
 	def get_actors():
-		actor_list = Actor.query.all()
+		actor_list = Actor.query.order_by(Actor.id).all()
 		if actor_list is None:
 			abort(404)
 
@@ -149,6 +149,39 @@ def create_app(test_congig=None):
 			return jsonify({
 				'success': True,
 				'movie': movie.format()
+				}), 200
+
+		except Exception:
+			abort(422)
+
+
+	@app.route('/actors/<actor_id>', methods=['PATCH'])
+	def patch_actor(actor_id):
+		body = request.get_json()
+
+		try:
+			actor = (
+				Actor.query.filter(Actor.id == actor_id).one_or_none()
+				)
+			if actor is None:
+				abort(404)
+
+			new_name = body.get('name')
+			new_age = body.get('age')
+			new_gender = body.get('gender')
+
+			if new_name is not None:
+				actor.name = new_name
+			if new_age is not None:
+				actor.age = new_age
+			if new_gender is not None:
+				actor.gender = new_gender
+
+			actor.update()
+
+			return jsonify({
+				'success': True,
+				'actor': actor.format()
 				}), 200
 
 		except Exception:
