@@ -102,6 +102,29 @@ def create_app(test_congig=None):
 		except Exception:
 			abort(422)
 
+	@app.route('/actors', methods=['POST'])
+	def create_actor():
+		body = request.get_json()
+
+		new_name = body.get('name')
+		new_age = body.get('age')
+		new_gender = body.get('gender')
+
+		actor = Actor(
+				name=new_name,
+				age=new_age,
+				gender=new_gender
+			)
+		try:
+			actor.insert()
+			return jsonify({
+				'success': True,
+				'actor': actor.format()
+			}), 200
+
+		except Exception:
+			abort(422)
+
 
 	return app
 
