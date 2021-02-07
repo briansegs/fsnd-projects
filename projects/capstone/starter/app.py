@@ -81,6 +81,28 @@ def create_app(test_congig=None):
 		except Exception:
 			abort(422)
 
+	@app.route('/movies', methods=['POST'])
+	def create_movie():
+		body = request.get_json()
+
+		new_title = body.get('title')
+		new_release_date = body.get('release_date')
+
+		movie = Movie(
+				title=new_title,
+				release_date=new_release_date
+			)
+		try:
+			movie.insert()
+			return jsonify({
+				'success': True,
+				'movie': movie.format()
+			}), 200
+
+		except Exception:
+			abort(422)
+
+
 	return app
 
 APP = create_app()
