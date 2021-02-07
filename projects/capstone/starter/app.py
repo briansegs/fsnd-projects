@@ -3,6 +3,7 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from models import db_drop_and_create_all, setup_db, Actor, Movie
+from auth import AuthError, requires_auth
 
 
 def create_app(test_congig=None):
@@ -16,6 +17,7 @@ def create_app(test_congig=None):
 		return jsonify("Healthy")
 
 	@app.route('/movies')
+	@requires_auth('get:movies')
 	def get_movies():
 		movie_list = Movie.query.order_by(Movie.id).all()
 		if movie_list is None:
@@ -29,6 +31,7 @@ def create_app(test_congig=None):
 		}), 200
 
 	@app.route('/actors')
+	@requires_auth('get:actors')
 	def get_actors():
 		actor_list = Actor.query.order_by(Actor.id).all()
 		if actor_list is None:
@@ -42,6 +45,7 @@ def create_app(test_congig=None):
 		}), 200
 
 	@app.route('/movies/<movie_id>', methods=['DELETE'])
+	@requires_auth('delete:movie')
 	def delete_movie(movie_id):
 		try:
 			movie = (
@@ -62,6 +66,7 @@ def create_app(test_congig=None):
 			abort(422)
 
 	@app.route('/actors/<actor_id>', methods=['DELETE'])
+	@requires_auth('delete:actor')
 	def delete_actor(actor_id):
 		try:
 			actor = (
@@ -82,6 +87,7 @@ def create_app(test_congig=None):
 			abort(422)
 
 	@app.route('/movies', methods=['POST'])
+	@requires_auth('post:movie')
 	def create_movie():
 		body = request.get_json()
 
@@ -103,6 +109,7 @@ def create_app(test_congig=None):
 			abort(422)
 
 	@app.route('/actors', methods=['POST'])
+	@requires_auth('post:actor')
 	def create_actor():
 		body = request.get_json()
 
@@ -126,6 +133,7 @@ def create_app(test_congig=None):
 			abort(422)
 
 	@app.route('/movies/<movie_id>', methods=['PATCH'])
+	@requires_auth('patch:movie')
 	def patch_movie(movie_id):
 		body = request.get_json()
 
@@ -156,6 +164,7 @@ def create_app(test_congig=None):
 
 
 	@app.route('/actors/<actor_id>', methods=['PATCH'])
+	@requires_auth('post:actor')
 	def patch_actor(actor_id):
 		body = request.get_json()
 
