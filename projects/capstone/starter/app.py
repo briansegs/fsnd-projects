@@ -15,6 +15,19 @@ def create_app(test_congig=None):
   def health():
     return jsonify("Healthy")
 
+  @app.route('/movies')
+  def get_movies():
+    movie_list = Movie.query.all()
+    if movie_list is None:
+        abort(404)
+
+    movies = [movie.format() for movie in movie_list]
+
+    return jsonify({
+        "success": True,
+        "movies": movies
+    }), 200
+
   return app
 
 APP = create_app()
