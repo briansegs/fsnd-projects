@@ -36,6 +36,18 @@ class Movie(db.Model):
     # String Release Date
     release_date = db.Column(db.String, nullable = False)
 
+
+    '''
+    format()
+        Json representation of the Movie model
+    '''
+    def format(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'release_date': self.release_date
+        }
+
     '''
     insert()
         inserts a new model into a database
@@ -84,6 +96,18 @@ class Actor(db.Model):
     age = db.Column(db.Integer, nullable = False)
     # String Gender
     gender = db.Column(db.String, nullable = False)
+
+    '''
+    format()
+        Json representation of the Actor model
+    '''
+    def format(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'age': self.age,
+            'gender': self.gender
+        }
 
     '''
     insert()
