@@ -28,6 +28,19 @@ def create_app(test_congig=None):
         "movies": movies
     }), 200
 
+  @app.route('/actors')
+  def get_actors():
+    actor_list = Actor.query.all()
+    if actor_list is None:
+        abort(404)
+
+    actors = [actor.format() for actor in actor_list]
+
+    return jsonify({
+        "success": True,
+        "actors": actors
+    }), 200
+
   return app
 
 APP = create_app()
