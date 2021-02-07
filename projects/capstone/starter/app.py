@@ -6,42 +6,62 @@ from models import db_drop_and_create_all, setup_db, Actor, Movie
 
 
 def create_app(test_congig=None):
-  app = Flask(__name__)
-  CORS(app)
-  setup_db(app)
-  db_drop_and_create_all()
+	app = Flask(__name__)
+	CORS(app)
+	setup_db(app)
+	db_drop_and_create_all()
 
-  @app.route('/')
-  def health():
-    return jsonify("Healthy")
+	@app.route('/')
+	def health():
+		return jsonify("Healthy")
 
-  @app.route('/movies')
-  def get_movies():
-    movie_list = Movie.query.all()
-    if movie_list is None:
-        abort(404)
+	@app.route('/movies')
+	def get_movies():
+		movie_list = Movie.query.all()
+		if movie_list is None:
+			abort(404)
 
-    movies = [movie.format() for movie in movie_list]
+		movies = [movie.format() for movie in movie_list]
 
-    return jsonify({
-        "success": True,
-        "movies": movies
-    }), 200
+		return jsonify({
+			"success": True,
+			"movies": movies
+		}), 200
 
-  @app.route('/actors')
-  def get_actors():
-    actor_list = Actor.query.all()
-    if actor_list is None:
-        abort(404)
+	@app.route('/actors')
+	def get_actors():
+		actor_list = Actor.query.all()
+		if actor_list is None:
+			abort(404)
 
-    actors = [actor.format() for actor in actor_list]
+		actors = [actor.format() for actor in actor_list]
 
-    return jsonify({
-        "success": True,
-        "actors": actors
-    }), 200
+		return jsonify({
+			"success": True,
+			"actors": actors
+		}), 200
 
-  return app
+	@app.route('/movies/<movie_id>', methods=['DELETE'])
+	def delete_movie(movie_id):
+		try:
+			movie = (
+				Movie.query.filter(Movie.id == movie_id).one_or_none()
+			)
+
+			if movie is None:
+				abort(404)
+
+			movie.delete()
+
+			return jsonify({
+				"success": True,
+				"delete": movie_id
+			}), 200
+
+		except Exception:
+			abort(422)
+
+	return app
 
 APP = create_app()
 
