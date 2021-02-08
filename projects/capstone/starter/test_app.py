@@ -321,17 +321,6 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'], 'Method Not Allowed')
 
-    # def test_404_sent_requesting_beyond_valid_page(self):
-    #     res = self.client().post('/movies', headers=self.producer_jwt, json=self.new_movie)
-    #     data = json.loads(res.data)
-
-    #     res = self.client().patch('/movies/100', headers=self.producer_jwt, json=self.new_title)
-    #     data = json.loads(res.data)
-
-    #     self.assertEqual(res.status_code, 404)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertTrue(data['message'], 'Resource Not Found')
-
     def test_422_if_movie_does_not_exist(self):
         res = self.client().delete('/movies/1', headers=self.producer_jwt)
         data = json.loads(res.data)
@@ -347,8 +336,6 @@ class TestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'], 'Unprocessable Entity')
-
-
 
     def test_movie_400_if_bad_request(self):
         res = self.client().post('/movies',headers=self.producer_jwt, json=self.new_bad_movie)
@@ -381,49 +368,6 @@ class TestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 422)
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'], 'Unprocessable Entity')
-
-    # def test_404_if_resource_not_found(self):
-    #     res = self.client().post('/questions/search/', json=self.bad_search)
-    #     data = json.loads(res.data)
-
-    #     self.assertEqual(res.status_code, 404)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertTrue(data['message'], 'Resource Not Found')
-
-    # def test_get_question_by_category(self):
-    #     res = self.client().get('/categories/2/questions')
-    #     data = json.loads(res.data)
-
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data['success'], True)
-    #     self.assertTrue(data['questions'])
-    #     self.assertTrue(data['total_questions'])
-    #     self.assertEqual(data['current_category'], None)
-    #     self.assertTrue(data['categories'])
-
-    # def test_category_405_if_invalid_method(self):
-    #     res = self.client().delete('/categories/1001/questions')
-    #     data = json.loads(res.data)
-
-    #     self.assertEqual(res.status_code, 405)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertTrue(data['message'], 'Invalid Method')
-
-    # def test_get_quizz_questions(self):
-    #     res = self.client().post('/quizzes', json=self.category)
-    #     data = json.loads(res.data)
-
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data['success'], True)
-    #     self.assertTrue(data['question'])
-
-    # def test_quizzes_405_if_invalid_method(self):
-    #     res = self.client().get('/quizzes', json=self.category)
-    #     data = json.loads(res.data)
-
-    #     self.assertEqual(res.status_code, 405)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertTrue(data['message'], 'Invalid Method')
 
 
 if __name__ == "__main__":
