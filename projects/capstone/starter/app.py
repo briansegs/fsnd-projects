@@ -99,6 +99,10 @@ def create_app(test_congig=None):
 		new_title = body.get('title')
 		new_release_date = body.get('release_date')
 
+		if new_title == '' or new_release_date == '':
+			abort(400)
+
+
 		movie = Movie(
 				title=new_title,
 				release_date=new_release_date
@@ -121,6 +125,9 @@ def create_app(test_congig=None):
 		new_name = body.get('name')
 		new_age = body.get('age')
 		new_gender = body.get('gender')
+
+		if new_name == '' or new_age == '':
+			abort(400)
 
 		actor = Actor(
 				name=new_name,
