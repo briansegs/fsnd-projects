@@ -93,6 +93,29 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertTrue(data['message'], 'Permission not found.')
 
+    def test_assistent_post_actor(self):
+        res = self.client().post('/actors', headers=self.assistant_jwt, json=self.new_actor)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Permission not found.')
+
+    def test_assistent_delete_movie(self):
+        res = self.client().delete('/movies/1', headers=self.assistant_jwt)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Permission not found.')
+
+    def test_assistent_delete_actor(self):
+        res = self.client().delete('/actors/1', headers=self.assistant_jwt)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Permission not found.')
 
     #Director
 
