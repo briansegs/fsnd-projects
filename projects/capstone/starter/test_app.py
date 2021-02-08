@@ -272,6 +272,28 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['actor'])
 
+    def test_producer_delete_movie(self):
+        res = self.client().post('/movies', headers=self.producer_jwt, json=self.new_movie)
+        data = json.loads(res.data)
+
+        res = self.client().delete('/movies/1', headers=self.producer_jwt)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['delete'])
+
+    def test_producer_delete_actor(self):
+        res = self.client().post('/actors', headers=self.producer_jwt, json=self.new_actor)
+        data = json.loads(res.data)
+
+        res = self.client().delete('/actors/1', headers=self.producer_jwt)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['delete'])
+
     # def test_405_invalid_method(self):
     #     res = self.client().patch('/categories')
     #     data = json.loads(res.data)
