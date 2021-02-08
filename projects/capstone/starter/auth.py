@@ -5,9 +5,9 @@ from jose import jwt
 from urllib.request import urlopen
 
 
-AUTH0_DOMAIN = 'full-stack-coffee-shop.us.auth0.com'
+AUTH0_DOMAIN = 'capstone-full-stack.us.auth0.com'
 ALGORITHMS = ['RS256']
-API_AUDIENCE = 'drinks'
+API_AUDIENCE = 'casting'
 
 # AuthError Exception
 
@@ -30,6 +30,7 @@ def get_token_auth_header():
         }, 401)
 
     parts = auth.split()
+
     if parts[0].lower() != 'bearer':
         raise AuthError({
             'code': 'invalid_header',
