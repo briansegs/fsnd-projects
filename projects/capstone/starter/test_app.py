@@ -159,6 +159,21 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(type(data['actors']), list)
 
+    def test_director_post_movie(self):
+        res = self.client().post('/movies', headers=self.director_jwt, json=self.new_movie)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Permission not found.')
+
+    def test_director_post_actor(self):
+        res = self.client().post('/actors', headers=self.director_jwt, json=self.new_actor)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['actor'])
 
 
     #Producer
