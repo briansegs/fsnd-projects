@@ -236,6 +236,14 @@ def create_app(test_congig=None):
 			'message': 'Bad Request'
         }), 400
 
+	@app.errorhandler(AuthError)
+	def handle_auth0_error(error):
+		return jsonify({
+			"success": False,
+			"error": error.status_code,
+			"message": error.error['description']
+		}), 401
+
 
 	return app
 
