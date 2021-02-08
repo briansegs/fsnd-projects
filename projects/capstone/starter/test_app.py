@@ -47,6 +47,12 @@ class TestCase(unittest.TestCase):
             'release_date': '2020'
         }
 
+        self.new_actor = {
+            'name': 'Sam England',
+            'age': '25',
+            'gender': 'male'
+        }
+
 
     def tearDown(self):
         """Executed after reach test"""
