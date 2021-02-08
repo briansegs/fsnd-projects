@@ -53,6 +53,14 @@ class TestCase(unittest.TestCase):
             'gender': 'male'
         }
 
+        self.new_title = {
+            'title': 'Iron Mind',
+        }
+
+        self.new_name = {
+            'name': 'Sammy E',
+        }
+
 
     def tearDown(self):
         """Executed after reach test"""
@@ -95,6 +103,22 @@ class TestCase(unittest.TestCase):
 
     def test_assistent_post_actor(self):
         res = self.client().post('/actors', headers=self.assistant_jwt, json=self.new_actor)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Permission not found.')
+
+    def test_assistent_patch_movie(self):
+        res = self.client().patch('/movies/1', headers=self.assistant_jwt, json=self.new_title)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Permission not found.')
+
+    def test_assistent_patch_actor(self):
+        res = self.client().patch('/actors/1', headers=self.assistant_jwt, json=self.new_name)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 401)
