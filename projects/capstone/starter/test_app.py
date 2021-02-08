@@ -47,10 +47,19 @@ class TestCase(unittest.TestCase):
             'release_date': '2020'
         }
 
+        self.new_bad_movie = {
+            'title': '',
+            'release_date': ''
+        }
+
         self.new_actor = {
             'name': 'Sam England',
             'age': '25',
             'gender': 'male'
+        }
+
+        self.new_bad_actor = {
+            'name': ''
         }
 
         self.new_title = {
@@ -294,85 +303,84 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['delete'])
 
-    # def test_405_invalid_method(self):
-    #     res = self.client().patch('/categories')
-    #     data = json.loads(res.data)
+    #Error behavior of endpoints
 
-    #     self.assertEqual(res.status_code, 405)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertTrue(data['message'], 'Method Not Allowed')
+    def test_movies_405_invalid_method(self):
+        res = self.client().patch('/movies', headers=self.assistant_jwt)
+        data = json.loads(res.data)
 
-    # def test_get_paginated_questions(self):
-    #     res = self.client().get('/questions/')
-    #     data = json.loads(res.data)
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Method Not Allowed')
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data['success'], True)
-    #     self.assertTrue(data['questions'])
-    #     self.assertTrue(data['total_questions'])
-    #     self.assertEqual(data['current_category'], None)
-    #     self.assertTrue(data['categories'])
+    def test_actors_405_invalid_method(self):
+        res = self.client().patch('/actors', headers=self.assistant_jwt)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Method Not Allowed')
 
     # def test_404_sent_requesting_beyond_valid_page(self):
-    #     res = self.client().get('/questions/?page=1001')
+    #     res = self.client().post('/movies', headers=self.producer_jwt, json=self.new_movie)
+    #     data = json.loads(res.data)
+
+    #     res = self.client().patch('/movies/100', headers=self.producer_jwt, json=self.new_title)
     #     data = json.loads(res.data)
 
     #     self.assertEqual(res.status_code, 404)
     #     self.assertEqual(data['success'], False)
     #     self.assertTrue(data['message'], 'Resource Not Found')
 
-    # def test_delete_question(self):
-    #     res = self.client().post('/questions', json=self.new_question)
-    #     data = json.loads(res.data)
+    def test_422_if_movie_does_not_exist(self):
+        res = self.client().delete('/movies/1', headers=self.producer_jwt)
+        data = json.loads(res.data)
 
-    #     created_id = data['created']
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Unprocessable Entity')
 
-    #     res = self.client().delete('/questions/' + str(created_id))
-    #     data = json.loads(res.data)
+    def test_422_if_actor_does_not_exist(self):
+        res = self.client().delete('/actors/1', headers=self.producer_jwt)
+        data = json.loads(res.data)
 
-    #     question = Question.query.filter(Question.id == 1).one_or_none()
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Unprocessable Entity')
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data['success'], True)
-    #     self.assertEqual(data['deleted'], created_id)
-    #     self.assertTrue(data['total_questions'])
-    #     self.assertTrue(len(data['questions']))
-    #     self.assertEqual(question, None)
 
-    # def test_422_if_question_does_not_exist(self):
-    #     res = self.client().delete('/questions/2002')
-    #     data = json.loads(res.data)
 
-    #     self.assertEqual(res.status_code, 422)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertTrue(data['message'], 'Unprocessable Entity')
+    def test_movie_400_if_bad_request(self):
+        res = self.client().post('/movies',headers=self.producer_jwt, json=self.new_bad_movie)
+        data = json.loads(res.data)
 
-    # def test_creat_new_question(self):
-    #     res = self.client().post('/questions', json=self.new_question)
-    #     data = json.loads(res.data)
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Bad Request')
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data['success'], True)
-    #     self.assertTrue(data['created'])
+    def test_actor_400_if_bad_request(self):
+        res = self.client().post('/actors',headers=self.producer_jwt, json=self.new_bad_actor)
+        data = json.loads(res.data)
 
-    # def test_400_if_bad_request(self):
-    #     res = self.client().post('/questions', json=self.new_bad_question)
-    #     data = json.loads(res.data)
+        self.assertEqual(res.status_code, 400)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Bad Request')
 
-    #     self.assertEqual(res.status_code, 400)
-    #     self.assertEqual(data['success'], False)
-    #     self.assertTrue(data['message'], 'Bad Request')
+    def test_movie_422_if_movie_is_none(self):
+        res = self.client().patch('/movies/100', headers=self.producer_jwt, json=self.new_title)
+        data = json.loads(res.data)
 
-    # def test_get_question_by_search(self):
-    #     res = self.client().post('/questions/search/', json=self.search_term)
-    #     data = json.loads(res.data)
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Unprocessable Entity')
 
-    #     self.assertEqual(res.status_code, 200)
-    #     self.assertEqual(data['success'], True)
-    #     self.assertTrue(data['questions'])
-    #     self.assertTrue(data['total_questions'])
-    #     self.assertEqual(data['current_category'], None)
-    #     self.assertTrue(data['categories'])
+    def test_movie_422_if_actor_is_none(self):
+        res = self.client().patch('/actors/100', headers=self.producer_jwt, json=self.new_name)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Unprocessable Entity')
 
     # def test_404_if_resource_not_found(self):
     #     res = self.client().post('/questions/search/', json=self.bad_search)
