@@ -42,11 +42,16 @@ class TestCase(unittest.TestCase):
             'Authorization': "Bearer {}".format(producer_token)
             }
 
+        self.new_movie = {
+            'title': 'Head Strong',
+            'release_date': '2020'
+        }
 
 
     def tearDown(self):
         """Executed after reach test"""
         pass
+
 
     def test_get_health(self):
         res = self.client().get('/')
@@ -56,6 +61,8 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(data['message'], "Healthy")
 
+    #Assistant
+
     def test_assistant_get_movies(self):
         res = self.client().get('/movies', headers=self.assistant_jwt)
         data = json.loads(res.data)
@@ -63,6 +70,25 @@ class TestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertEqual(type(data['movies']), list)
+
+    def test_assistent_get_actors(self):
+        res = self.client().get('/actors', headers=self.assistant_jwt)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(type(data['actors']), list)
+
+    def test_assistent_post_movie(self):
+        res = self.client().post('/movies', headers=self.assistant_jwt, json=self.new_movie)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
+        self.assertTrue(data['message'], 'Permission not found.')
+
+
+    #Director
 
     def test_director_get_movies(self):
         res = self.client().get('/movies', headers=self.director_jwt)
@@ -72,6 +98,18 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(type(data['movies']), list)
 
+    def test_director_get_actors(self):
+        res = self.client().get('/actors', headers=self.director_jwt)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(type(data['actors']), list)
+
+
+
+    #Producer
+
     def test_producer_get_movies(self):
         res = self.client().get('/movies', headers=self.producer_jwt)
         data = json.loads(res.data)
@@ -80,10 +118,8 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertEqual(type(data['movies']), list)
 
-
-
-    def test_get_actors(self):
-        res = self.client().get('/actors', headers=self.assistant_jwt)
+    def test_producer_get_actors(self):
+        res = self.client().get('/actors', headers=self.producer_jwt)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
