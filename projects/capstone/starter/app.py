@@ -16,11 +16,14 @@ def create_app(test_congig=None):
 
 	@app.route('/')
 	def health():
-		return jsonify("Healthy")
+		return jsonify({
+      		"success": True,
+        	"message": "Healthy"
+      	}), 200
 
 	@app.route('/movies')
 	@requires_auth('get:movies')
-	def get_movies():
+	def get_movies(jwt):
 		movie_list = Movie.query.order_by(Movie.id).all()
 		if movie_list is None:
 			abort(404)
@@ -34,7 +37,7 @@ def create_app(test_congig=None):
 
 	@app.route('/actors')
 	@requires_auth('get:actors')
-	def get_actors():
+	def get_actors(jwt):
 		actor_list = Actor.query.order_by(Actor.id).all()
 		if actor_list is None:
 			abort(404)
@@ -48,7 +51,7 @@ def create_app(test_congig=None):
 
 	@app.route('/movies/<movie_id>', methods=['DELETE'])
 	@requires_auth('delete:movie')
-	def delete_movie(movie_id):
+	def delete_movie(jwt, movie_id):
 		try:
 			movie = (
 				Movie.query.filter(Movie.id == movie_id).one_or_none()
@@ -69,7 +72,7 @@ def create_app(test_congig=None):
 
 	@app.route('/actors/<actor_id>', methods=['DELETE'])
 	@requires_auth('delete:actor')
-	def delete_actor(actor_id):
+	def delete_actor(jwt, actor_id):
 		try:
 			actor = (
 				Actor.query.filter(Actor.id == actor_id).one_or_none()
@@ -90,7 +93,7 @@ def create_app(test_congig=None):
 
 	@app.route('/movies', methods=['POST'])
 	@requires_auth('post:movie')
-	def create_movie():
+	def create_movie(jwt):
 		body = request.get_json()
 
 		new_title = body.get('title')
@@ -112,7 +115,7 @@ def create_app(test_congig=None):
 
 	@app.route('/actors', methods=['POST'])
 	@requires_auth('post:actor')
-	def create_actor():
+	def create_actor(jwt):
 		body = request.get_json()
 
 		new_name = body.get('name')
@@ -136,7 +139,7 @@ def create_app(test_congig=None):
 
 	@app.route('/movies/<movie_id>', methods=['PATCH'])
 	@requires_auth('patch:movie')
-	def patch_movie(movie_id):
+	def patch_movie(jwt, movie_id):
 		body = request.get_json()
 
 		try:
@@ -167,7 +170,7 @@ def create_app(test_congig=None):
 
 	@app.route('/actors/<actor_id>', methods=['PATCH'])
 	@requires_auth('post:actor')
-	def patch_actor(actor_id):
+	def patch_actor(jwt, actor_id):
 		body = request.get_json()
 
 		try:
