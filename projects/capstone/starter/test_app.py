@@ -175,6 +175,17 @@ class TestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['actor'])
 
+    def test_director_patch_movie(self):
+        res = self.client().post('/movies', headers=self.producer_jwt, json=self.new_movie)
+        data = json.loads(res.data)
+
+        res = self.client().patch('/movies/1', headers=self.director_jwt, json=self.new_title)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['movie'])
+
 
     #Producer
 
