@@ -5,8 +5,11 @@ from flask_sqlalchemy import SQLAlchemy
 
 from app import create_app
 from models import db_drop_and_create_all, setup_db, Actor, Movie
-from tokens import assistant_token, director_token, producer_token
 
+assistant_token = os.environ['ASSISTANT_Token']
+director_token = os.environ['DIRECTOR_TOKEN']
+producer_token = os.environ['PRODUCER_TOKEN']
+database_path = os.environ['DATABASE_URL']
 
 class TestCase(unittest.TestCase):
 
@@ -14,10 +17,7 @@ class TestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "trivia_test"
-        self.database_path = "postgresql://{}:{}@{}/{}".format(
-            'postgres', 'admin', 'localhost:5432', self.database_name
-            )
+        self.database_path = database_path
 
         setup_db(self.app, self.database_path)
 
